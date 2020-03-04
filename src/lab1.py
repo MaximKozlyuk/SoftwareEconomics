@@ -6,7 +6,7 @@ locale.setlocale(locale.LC_ALL, '')
 print("Lab 1 - Совокупная стоимость владения")
 
 # Вариант
-dataIncreaseRatio = 1.12
+dataIncreaseRatio = 1.06
 print("Вариант: 12\n")
 
 
@@ -14,7 +14,7 @@ class Expense(object):
 
     def __init__(self, name, cost):
         self.name = name
-        self.cost = round(cost * dataIncreaseRatio)
+        self.cost = math.ceil(cost * dataIncreaseRatio)
 
     def __repr__(self):
         return '{}: {}'.format(self.name, self.cost)
@@ -36,14 +36,18 @@ expenses = [Expense("Amount of PC", 150.0), Expense("Amount of users in organisa
             Expense("Outsourcing", 180_000.0), Expense("Development and introduction", 300_000.0),
             Expense("Phone", 140_000.0), Expense("Internet", 100_000.0)]
 
+print("Перечень всех завтрат: ")
+for e in expenses:
+    print(e)
+print()
+
 # Task 1
 print("1. Рассчитать прямые ежегодные затраты на ИС.")
 sumOfExpenses = sum(map(lambda x: x.cost, expenses))
 print("Прямые ежегодные завтраты на ИС:", sumOfExpenses, "\n")
 
 # Task 2.1
-print(
-    "2. Рассчитать ежегодные косвенные затраты на ИС, которые складываются из пользовательских затрат и затрат на простои системы.")
+print("2. Рассчитать ежегодные косвенные затраты на ИС, которые складываются из пользовательских затрат и затрат на простои системы.")
 # Кол-во пользователей в организации
 empAmount = var(170)
 # Средняя зарплата пользователя
