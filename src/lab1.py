@@ -5,9 +5,12 @@ locale.setlocale(locale.LC_ALL, '')
 
 print("Lab 1 - Совокупная стоимость владения")
 
+variant = int(input("Введите номер варианта:"), 10)
+print(variant)
+
 # Вариант
-dataIncreaseRatio = 1.06
-print("Вариант: 12\n")
+dataIncreaseRatio = 1.0 + (variant / 100.0)
+print("Вариант:", dataIncreaseRatio)
 
 
 class Expense(object):
@@ -28,22 +31,31 @@ def roundMoney(x):
     return round(x, 2)
 
 
-expenses = [Expense("Amount of PC", 150.0), Expense("Amount of users in organisation", 170.0),
-            Expense("Gross revenue", 75_650_000.0), Expense("Average user salary", 12_000.0),
-            Expense("New equipment", 400_000.0), Expense("Soft", 150_000.0), Expense("Computer parts", 130_000.0),
-            Expense("System administrator", 190_000.0), Expense("IT Manager", 260_000.0),
-            Expense("Programmer", 100_000.0), Expense("Tech support", 380_000.0), Expense("Trainings", 70_000.0),
-            Expense("Outsourcing", 180_000.0), Expense("Development and introduction", 300_000.0),
-            Expense("Phone", 140_000.0), Expense("Internet", 100_000.0)]
+IT_Budget = [Expense("Кол-во ПК в организации", 150.0),
+             Expense("Кол-во пользователей в организации", 170.0),
+             Expense("Годовой валовой доход компании, руб.", 75_650_000.0),
+             Expense("Средняя зарплата пользователя", 12_000.0),
+             Expense("Затраты на закупку оборудования", 400_000.0),
+             Expense("Затраты на ПО", 150_000.0),
+             Expense("Затраты на комплектующие", 130_000.0),
+             Expense("Системный администратор - 1 ед.", 190_000.0),
+             Expense("ИТ- менеджер - 1 ед.", 260_000.0),
+             Expense("Программист - 1 ед.", 100_000.0),
+             Expense("Персонал технической поддержки - 2 ед.", 380_000.0),
+             Expense("Затраты на обучение", 70_000.0),
+             Expense("Затраты на внешнюю поддержку (outsourcing)", 180_000.0),
+             Expense("Затраты на разработку/внедрение ИТ- проектов", 300_000.0),
+             Expense("Затраты на телефонию", 140_000.0),
+             Expense("Затраты на Интернет", 100_000.0)]
 
 print("Перечень всех завтрат: ")
-for e in expenses:
+for e in IT_Budget:
     print(e)
 print()
 
 # Task 1
 print("1. Рассчитать прямые ежегодные затраты на ИС.")
-sumOfExpenses = sum(map(lambda x: x.cost, expenses))
+sumOfExpenses = sum(map(lambda x: x.cost, IT_Budget))
 print("Прямые ежегодные завтраты на ИС:", sumOfExpenses, "\n")
 
 # Task 2.1
