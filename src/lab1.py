@@ -1,5 +1,5 @@
 import locale
-import math
+from math import ceil, floor
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -8,26 +8,26 @@ print("Lab 1 - Совокупная стоимость владения")
 variant = int(input("Введите номер варианта:"), 10)
 
 # Вариант
-dataIncreaseRatio = 1.0 + (variant / 100.0)
+dataIncreaseRatio = (100 + variant) / 100.0
 print("Вариант:", dataIncreaseRatio, "\n")
+
+
+def roundMoney(x):
+    return round(x, 2)
 
 
 class Stat(object):
 
     def __init__(self, name, cost):
         self.name = name
-        self.cost = math.ceil(cost * dataIncreaseRatio)
+        self.cost = roundMoney(cost * dataIncreaseRatio)
 
     def __repr__(self):
         return '{}: {}'.format(self.name, self.cost)
 
 
 def var(x):
-    return math.ceil(x * dataIncreaseRatio)
-
-
-def roundMoney(x):
-    return round(x, 2)
+    return ceil(x * dataIncreaseRatio)
 
 
 def printList(msg, l):
@@ -37,11 +37,14 @@ def printList(msg, l):
     print()
 
 
-organization_stats = [
-    Stat("Кол-во ПК в организации", 150.0),
-    Stat("Кол-во пользователей в организации", 170.0),
-    Stat("Годовой валовой доход компании, руб.", 75_650_000.0),
-    Stat("Средняя зарплата пользователя", 12_000.0)]
+# Кол-во ПК в организации
+pc = ceil(var(150.0))
+# Кол-во пользователей в организации
+users = ceil(var(170.0))
+# Годовой валовой доход компании, руб.
+revenue = roundMoney(75_650_000.0*dataIncreaseRatio)
+# Средняя зарплата пользователя
+avg_salary = roundMoney(12_000.0*dataIncreaseRatio)
 
 IT_Budget = [
     Stat("Затраты на закупку оборудования", 400_000.0),
@@ -57,7 +60,12 @@ IT_Budget = [
     Stat("Затраты на телефонию", 140_000.0),
     Stat("Затраты на Интернет", 100_000.0)]
 
-printList("Статистика организации: ", organization_stats)
+print("Статистика организации: ")
+print("{}: {}".format("Кол-во ПК в организации", pc))
+print("{}: {}".format("Кол-во пользователей в организации", users))
+print("{}: {}".format("Годовой валовой доход компании, руб.", revenue))
+print("{}: {}".format("Средняя зарплата пользователя", avg_salary))
+
 printList("IT бюджет: ", IT_Budget)
 
 # Task 1
@@ -71,10 +79,10 @@ print("которые складываются из пользовательск
 
 print("Данные для расчета затрат пользователей на ИТ:")
 # Кол-во пользователей в организации
-empAmount = var(170)
+empAmount = users
 print("Кол-во пользователей в организации, Кп", empAmount)
 # Средняя зарплата пользователя
-avgSalary = var(12000)
+avgSalary = avg_salary
 print("Средняя зарплата пользователя, Зп", avgSalary)
 # Среднее кол-во рабочих часов в месяце
 avgWorkingHoursForMonth = var(168)
