@@ -23,7 +23,7 @@ class Stat(object):
 
 
 def var(x):
-    return math.floor(x * dataIncreaseRatio)
+    return math.ceil(x * dataIncreaseRatio)
 
 
 def roundMoney(x):
@@ -63,23 +63,30 @@ printList("IT бюджет: ", IT_Budget)
 # Task 1
 print("1. Рассчитать прямые ежегодные затраты на ИС.")
 sumOfExpenses = sum(map(lambda x: x.cost, IT_Budget))
-print("Прямые ежегодные завтраты на ИС:", sumOfExpenses, "\n")
+print("(ПЗ) Прямые ежегодные завтраты на ИС:", sumOfExpenses, "\n")
 
 # Task 2.1
 print("2. Рассчитать ежегодные косвенные затраты на ИС,")
-print("которые складываются из пользовательских затрат и затрат на простои системы.")
+print("которые складываются из пользовательских затрат и затрат на простои системы.\n")
+
+print("Данные для расчета затрат пользователей на ИТ:")
 # Кол-во пользователей в организации
 empAmount = var(170)
+print("Кол-во пользователей в организации, Кп", empAmount)
 # Средняя зарплата пользователя
 avgSalary = var(12000)
+print("Средняя зарплата пользователя, Зп", avgSalary)
 # Среднее кол-во рабочих часов в месяце
 avgWorkingHoursForMonth = var(168)
+print("Среднее кол-во рабочих часов в месяце, Рч", avgWorkingHoursForMonth)
 # Кол-во часов в месяц, затрачиваемых одним пользователем на самообучение, обслуживание компьютера, файлов и программ
 empSelfServiceForMonth = var(8)
+print("Кол-во часов в месяц, затрачиваемых одним пользователем на самообучение,")
+print("обслуживание компьютера, файлов и программ, Пч", empSelfServiceForMonth, "\n")
 
 annualEmpPCCost = (avgSalary / avgWorkingHoursForMonth) * (empSelfServiceForMonth * 12)
 print("2.1")
-print("Годовая стоимость деятельности пользователя в связи с наличием у него ПК:", roundMoney(annualEmpPCCost))
+print("(Сп) Годовая стоимость деятельности пользователя в связи с наличием у него ПК:", roundMoney(annualEmpPCCost))
 
 allEmpPCCost = annualEmpPCCost * empAmount
 print("Ежегодные затраты пользователей на ИС:", roundMoney(allEmpPCCost))
