@@ -1,5 +1,5 @@
 import locale
-from math import ceil, floor
+from math import ceil
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -71,7 +71,7 @@ printList("IT бюджет: ", IT_Budget)
 # Task 1
 print("1. Рассчитать прямые ежегодные затраты на ИС.")
 sumOfExpenses = sum(map(lambda x: x.cost, IT_Budget))
-print("(ПЗ) Прямые ежегодные завтраты на ИС:", sumOfExpenses, "\n")
+print("(ПЗ) Прямые ежегодные затраты на ИС:", sumOfExpenses, "\n")
 
 # Task 2.1
 print("2. Рассчитать ежегодные косвенные затраты на ИС,")
@@ -97,15 +97,19 @@ print("2.1")
 print("(Сп) Годовая стоимость деятельности пользователя в связи с наличием у него ПК:", roundMoney(annualEmpPCCost))
 
 allEmpPCCost = annualEmpPCCost * empAmount
-print("Ежегодные затраты пользователей на ИС:", roundMoney(allEmpPCCost))
+print("(Спг) Ежегодные затраты пользователей на ИС:", roundMoney(allEmpPCCost))
 
 # Task 2.2
-print("2.2")
+print("2.2 Данные для расчетов стоимости простоев ИТ-системы.")
 shutdownForMonth = var(2)
+print("Кол-во отключений системы в месяц, Ко", shutdownForMonth)
 avgPowerOffDuration = var(3)
+print("Средняя продолжительность отключений, часов, Чо", avgPowerOffDuration)
 turnedOffUsersAmount = var(20)
+print("Количество отключенных пользователей, По", turnedOffUsersAmount)
 # годовой валовый доход
-annualGrossIncome = var(78_880_000)
+annualGrossIncome = roundMoney(78_880_000 * dataIncreaseRatio)
+print("Годовой валовой доход компании, руб., Гд", annualGrossIncome)
 
 # Task 2.3
 print("2.3")
@@ -126,7 +130,7 @@ annualSystemDowntimeCost = (incomePerEmp + mh) * inactionHoursForYear * turnedOf
 print("Ежегодные расходы на простои системы, руб./год:", roundMoney(annualSystemDowntimeCost))
 
 indirectExpense = annualSystemDowntimeCost + allEmpPCCost
-print("Общая сумма косвенных завтрат:", roundMoney(indirectExpense), "\n")
+print("Общая сумма косвенных затрат:", roundMoney(indirectExpense), "\n")
 
 # Task 3
 print("3. Сложив прямые и косвенные затраты, получите итоговую сумму ТСО:")
