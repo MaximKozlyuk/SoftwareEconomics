@@ -24,7 +24,7 @@ def line_intersection(line1, line2):
 
     div = det(xdiff, ydiff)
     if div == 0:
-        raise Exception('lines do not intersect')
+        raise Exception('Линии не пересекаются')
 
     d = (det(*line1), det(*line2))
     x = det(d, xdiff) / div
@@ -77,23 +77,28 @@ for k in range(1, n + 1):
 print("R:", R)
 print("NPVV:", NPVV)
 
-plt.xlabel('n')
+plt.xlabel('n, кол-во лет')
 plt.ylabel('NPV')
-plt.title("Cash flows like vine")
+plt.title("Чистый приведенный доход")
 
 xValues = list(range(0, n + 1))
-plt.plot(xValues, NPVV, marker='o')
+plt.plot(xValues, NPVV, marker='o', label="NPV")
 plt.plot(list(range(0, n + 1)), [0] * (n + 1))
 
-plt.legend()
-plt.show()
-
 # 4
+balance = 0
 for i in range(1, len(NPVV)):
     if NPVV[i - 1] < 0 and NPVV[i] > 0:
-        print(
-            line_intersection(
+        balance = line_intersection(
                 ((0.0, 0.0), (1.0, 0.0)),
                 ((i-1, NPVV[i - 1]), (i, NPVV[i]))
-            )
         )
+        print(balance)
+
+balanceX = [balance[0]] * 2
+balanceY = (NPVV[0], NPVV[-1])
+
+plt.plot(balanceX, balanceY, label="точка окупаемости")
+
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+plt.show()
