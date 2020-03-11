@@ -135,3 +135,5 @@ print("Общая сумма косвенных затрат:", roundMoney(indir
 # Task 3
 print("3. Сложив прямые и косвенные затраты, получите итоговую сумму ТСО:")
 print("Итоговая сумма ТСО: ", roundMoney(sumOfExpenses + indirectExpense))
+
+input('Press ENTER to exit')

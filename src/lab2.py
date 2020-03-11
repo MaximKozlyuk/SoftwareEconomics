@@ -81,9 +81,13 @@ plt.xlabel('n, кол-во лет')
 plt.ylabel('NPV')
 plt.title("Чистый приведенный доход")
 
+fig = plt.figure()
+ax = fig.add_subplot(111)
 xValues = list(range(0, n + 1))
 plt.plot(xValues, NPVV, marker='o', label="NPV")
-plt.plot(list(range(0, n + 1)), [0] * (n + 1))
+# plt.xticks()
+plt.plot(list(range(0, n + 1)), [0] * (n + 1), color="green")
+plt.grid()
 
 # 4
 balance = 0
@@ -97,8 +101,7 @@ for i in range(1, len(NPVV)):
 
 balanceX = [balance[0]] * 2
 balanceY = (NPVV[0], NPVV[-1])
+plt.plot(balance[0], balance[1], label="точка окупаемости", marker="o", color="red")
 
-plt.plot(balanceX, balanceY, label="точка окупаемости")
-
-plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 plt.show()
