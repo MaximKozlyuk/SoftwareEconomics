@@ -8,6 +8,7 @@
 """
 
 import matplotlib.pyplot as plt
+from sympy import *
 
 
 def round_money(x):
@@ -57,9 +58,6 @@ NPV = 0.0
 for k in range(1, len(CF)):
     NPV += (CF[k] / ((1 + inv) ** k))
     print((1.0 + inv) ** k)
-    print(k)
-    print(CF[k])
-    print(NPV)
 
 NPV = round_money(NPV - Ic)
 print("NPV:", NPV, "\n")
@@ -74,6 +72,13 @@ for k in range(1, n + 1):
 PI = bufSum / Ic
 
 print("PI:", PI)
+
+x, y, z, t, e = symbols('x y z t e')
+e = -110000
+for k in range(1, len(CF)):
+    e += (CF[k] / ((1 + x) ** k))
+
+print(solve(Eq(e, 0), x)[0])
 
 # 3
 NPVV = [-Ic]
