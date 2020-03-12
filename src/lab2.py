@@ -7,7 +7,6 @@
     с учетом ставки дисконтирования (нормы прибыли), равной 11%.
 """
 
-from operator import sub
 import matplotlib.pyplot as plt
 
 
@@ -57,11 +56,11 @@ print(inv)
 NPV = 0.0
 for k in range(1, len(CF)):
     NPV += (CF[k] / ((1 + inv) ** k))
-
     print((1.0 + inv) ** k)
     print(k)
     print(CF[k])
     print(NPV)
+
 NPV = round_money(NPV - Ic)
 print("NPV:", NPV, "\n")
 
@@ -98,7 +97,7 @@ plt.plot(xValues, NPVV, marker='o', label="NPV")
 plt.plot(list(range(0, n + 1)), [0] * (n + 1), color="green")
 plt.grid()
 
-# 4, 5
+# 4
 balance = 0
 for i in range(1, len(NPVV)):
     if NPVV[i - 1] < 0 and NPVV[i] > 0:
@@ -111,10 +110,11 @@ for i in range(1, len(NPVV)):
 if balance == 0:
     raise Exception("Точка окупаемости не найдена")
 
+# 5
 balanceX = balance[0], balance[0]
 balanceY = (NPVV[0], NPVV[-1])
 plt.plot(balance[0], balance[1], label="точка окупаемости", marker="o", color="red")
-plt.text(balance[0], balance[1], 'NPV = 0', horizontalalignment='right')
+plt.text(balance[0], balance[1], round(balance[0], 3), horizontalalignment='right')
 plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 plt.show()
 
