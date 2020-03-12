@@ -34,25 +34,34 @@ def line_intersection(line1, line2):
 
 print("Lab2 Целесообразность внедрения системы управления ИТ- инфраструктурой\n")
 
-# Стартовые инвестиции
-Ic = 100000
-# Ставка дисконтирования
-i = 0.11
-# Горизонт расчета проекта (кол-во лет)
-n = 3
-# DP Приток средств в i-тый год
-cashInflow = [0, 75000, 75000, 75000]
-# Z Отток средств в i-тый год
-cashOutflow = [0, 20000, 15000, 10000]
+print("Введите данные для расчета:")
+Ic = float(input("Стартовые инвестиции:"))
+inv = float(input("Ставка дисконтирования:"))
+n = int(input("Горизонт расчета проекта (кол-во лет):"))
+print("DP Приток средств в i-тый год:")
+cashInflow = []
+for i in range(0, n):
+    cashInflow.append(float(input()))
+print("Отток средств в i-тый год:")
+cashOutflow = []
+for i in range(0, n):
+    cashOutflow.append(float(input()))
 
 # 1. чистый приведенный доход NPV
-CF = list(map(sub, cashInflow, cashOutflow))
-CF[0] = -Ic
+CF = [-Ic]
+for i in range(0, len(cashInflow)):
+    CF.append(cashInflow[i] - cashOutflow[i])
 print("CF:", CF)
 
+print(inv)
 NPV = 0.0
-for k in range(1, 4):
-    NPV += (CF[k] / (1 + i) ** k)
+for k in range(1, len(CF)):
+    NPV += (CF[k] / ((1 + inv) ** k))
+
+    print((1.0 + inv) ** k)
+    print(k)
+    print(CF[k])
+    print(NPV)
 NPV = round_money(NPV - Ic)
 print("NPV:", NPV, "\n")
 
@@ -62,7 +71,7 @@ print("ROI:", ROI)
 
 bufSum = 0
 for k in range(1, n + 1):
-    bufSum += CF[k] / ((1 + i) ** k)
+    bufSum += CF[k] / ((1 + inv) ** k)
 PI = bufSum / Ic
 
 print("PI:", PI)
@@ -71,7 +80,7 @@ print("PI:", PI)
 NPVV = [-Ic]
 R = [-Ic]
 for k in range(1, n + 1):
-    R.append(CF[k] / ((1 + i) ** k))
+    R.append(CF[k] / ((1 + inv) ** k))
     NPVV.append(NPVV[k - 1] + R[k])
 
 print("R:", R)
@@ -89,7 +98,7 @@ plt.plot(xValues, NPVV, marker='o', label="NPV")
 plt.plot(list(range(0, n + 1)), [0] * (n + 1), color="green")
 plt.grid()
 
-# 4
+# 4, 5
 balance = 0
 for i in range(1, len(NPVV)):
     if NPVV[i - 1] < 0 and NPVV[i] > 0:
@@ -97,11 +106,16 @@ for i in range(1, len(NPVV)):
                 ((0.0, 0.0), (1.0, 0.0)),
                 ((i-1, NPVV[i - 1]), (i, NPVV[i]))
         )
-        print(balance)
+        print("balance point:", balance)
 
-balanceX = [balance[0]] * 2
+if balance == 0:
+    raise Exception("Точка окупаемости не найдена")
+
+balanceX = balance[0], balance[0]
 balanceY = (NPVV[0], NPVV[-1])
 plt.plot(balance[0], balance[1], label="точка окупаемости", marker="o", color="red")
-
+plt.text(balance[0], balance[1], 'NPV = 0', horizontalalignment='right')
 plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 plt.show()
+
+input('\nPress ENTER to exit')
