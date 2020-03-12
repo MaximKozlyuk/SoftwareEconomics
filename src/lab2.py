@@ -118,4 +118,6 @@ plt.text(balance[0], balance[1], round(balance[0], 3), horizontalalignment='righ
 plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 plt.show()
 
+# todo input from file, sympi equation
+
 input('\nPress ENTER to exit')
