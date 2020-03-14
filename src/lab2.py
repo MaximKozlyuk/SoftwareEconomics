@@ -128,3 +128,4 @@ plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 plt.show()
 
 input('\nPress ENTER to exit')
+exit(0)
