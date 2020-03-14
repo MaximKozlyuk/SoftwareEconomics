@@ -7,6 +7,8 @@
     с учетом ставки дисконтирования (нормы прибыли), равной 11%.
 """
 
+# todo input from file
+
 import matplotlib.pyplot as plt
 from sympy import *
 
@@ -53,6 +55,7 @@ for i in range(0, len(cashInflow)):
     CF.append(cashInflow[i] - cashOutflow[i])
 print("CF:", CF)
 
+print("Ставка дисконтирования в каждый год:")
 print(inv)
 NPV = 0.0
 for k in range(1, len(CF)):
@@ -73,12 +76,13 @@ PI = bufSum / Ic
 
 print("PI:", PI)
 
+# IRR
 x, y, z, t, e = symbols('x y z t e')
-e = -110000
+e = -Ic
 for k in range(1, len(CF)):
     e += (CF[k] / ((1 + x) ** k))
-
-print(solve(Eq(e, 0), x)[0])
+IRR = solve(Eq(e, 0), x)[0]
+print("IRR", IRR)
 
 # 3
 NPVV = [-Ic]
@@ -110,7 +114,7 @@ for i in range(1, len(NPVV)):
                 ((0.0, 0.0), (1.0, 0.0)),
                 ((i-1, NPVV[i - 1]), (i, NPVV[i]))
         )
-        print("balance point:", balance)
+        print("Момент окупаемости наступит через", round(balance[0], 3), "лет")
 
 if balance == 0:
     raise Exception("Точка окупаемости не найдена")
@@ -119,10 +123,8 @@ if balance == 0:
 balanceX = balance[0], balance[0]
 balanceY = (NPVV[0], NPVV[-1])
 plt.plot(balance[0], balance[1], label="точка окупаемости", marker="o", color="red")
-plt.text(balance[0], balance[1], round(balance[0], 3), horizontalalignment='right')
+plt.text(balance[0], balance[1], round(IRR + 1, 3), horizontalalignment='right')
 plt.legend(bbox_to_anchor=(1.05, 1), borderaxespad=0.)
 plt.show()
-
-# todo input from file, sympi equation
 
 input('\nPress ENTER to exit')
