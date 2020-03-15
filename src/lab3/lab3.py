@@ -145,6 +145,19 @@ class LifeCircleStagesFile(DefaultPath):
                     LifeCircleStage(int(row[0]), row[1], float(row[2]), float(row[3]))
                 )
 
+    # Расчитывает и печатает таблицу 1.7
+    def calc_avg_emp_amount(self, T, D):
+        headers = ["Этапы жизненного цикла", "Численность Zi(чел)", "Длительность, месяцов Дi"]
+        z_i = []
+        d_i = []
+        rows = [headers]
+        for stage in self.lf_stages:
+            z_i.append(stage.alpha * T / stage.beta * D)
+            d_i.append(stage.beta * D)
+            rows.append([stage.name, z_i[-1], d_i[-1]])
+        print(tabulate(rows, headers="firstrow"))
+        return z_i, d_i
+
 
 # Инициализация параметров
 
@@ -246,6 +259,10 @@ optMethod = Method.optimal()
 print("\n1.4 Пределение стоимости (договорной цены) на создание ПС")
 print("Выбираем исходные данные, полученные при помощи метода:",
       optMethod, "как наименее затратные")
+
+print("\nТаблица 1.7 - Расчет средней численности сотрудников")
+Zi, Di = lifeCircleStagesFile.calc_avg_emp_amount(optMethod.T, deadline)
+
 
 input('\nPress ENTER to exit')
 exit(0)
