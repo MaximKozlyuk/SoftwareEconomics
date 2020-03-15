@@ -1,4 +1,6 @@
 import csv
+import math
+from tabulate import tabulate
 
 
 # Обьявление классов и функций
@@ -130,17 +132,56 @@ V = properties[7][1]
 # Ставка программиста (руб.)
 programmer_rate = properties[8][1]
 
-# 1.1
-# Норматив производительности труда (человеко-месяц)
+print("Выбранный тип программной системы: ИСС")
 
+# 1.1
+print("\n1.1 Прямой метод определения технико-экономических показателей (метод экспертных оценок)")
+P = 0.0
+if system_size < 30000:
+    P = 220
+else:
+    P = 160
+print("Норматив производительности труда (строк/человеко-месяц) P =", P)
+T_1 = system_size / P
+print("Трудозатраты на разработку системы:", T_1)
+Z_1 = T_1 / deadline
+print("Средняя численность специалистов: Z =", math.ceil(Z_1))
 
 # 1.2
+print("\n1.2 Метод определения ТЭП проекта на основе размерности БД программной системы.")
 R = 2 * N * 5 * K1 * 10 * M
-print("Размерность базы данных R =", R, "полей")
+print("Размерность базы данных R =", int(math.ceil(R)), "полей")
 laborCategory = laborCategoriesDB.labor_standard_by_size(R)
-print("Норматив трудоемкости разработки ПС:", laborCategory)
+print("Норматив трудоемкости разработки ПС: [", laborCategory[0], ",", laborCategory[1], "] ϴ‎ =", laborCategory[2])
+T_2 = 0.01 * R * laborCategory[2]
+print("Трудозатраты: ", T_2)
+Z_2 = T_2 / deadline
+print("Средняя численность специалистов:", math.ceil(Z_2))
 
 # 1.3
+print("\n1.3 Определение технико-экономических показателей функциональных точек")
+W = 0.65 + (0.01 * V)
+print("Влияние факторов внешней среды на общее кол-во функциональных точек W =", W)
+Rf = func_points * W
+print("Уточненное кол-во функ. точек с учетом факторов внешней среды R(F) =", Rf)
+R_LOC = Rf * language.loc
+print("Размерность ПО для", language.name, ":", R_LOC)
+COCOMO_A = 3
+COCOMO_E = 1.12
+T_3 = COCOMO_A * ((R_LOC / 1000) ** COCOMO_E) / 12
+print("Трудозатраты (выбрана ИСС): ", T_3)
+Z_3 = T_3 / deadline
+print("Средняя численность специалистов:", math.ceil(Z_3), "\n")
+
+print("Выводы")
+methods = ["Прямой метод экспертных оценок", "На основе размерности бд", "Метод функциональных точек"]
+table = [["Метод", "Трудозатраты (чм)", "Деятельность (мес)", "Исполнителей (чел)"],
+         [methods[0], T_1, deadline, math.ceil(Z_1)], [methods[1], T_2, deadline, math.ceil(Z_2)],
+         [methods[2], T_3, deadline, math.ceil(Z_3)]]
+print(tabulate(table, headers="firstrow"))
+
+# 1.4
+print("\n Пределение стоимости (договорной цены) на создание ПС")
 
 
 input('\nPress ENTER to exit')
