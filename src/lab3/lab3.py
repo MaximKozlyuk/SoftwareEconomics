@@ -16,7 +16,7 @@ class DefaultPath(object):
         super().__init__()
 
 
-class PropertiesReading(DefaultPath):
+class PropertiesFile(DefaultPath):
     default_properties_path = "./lab3/params.properties"
 
     def __init__(self, file_name) -> None:
@@ -31,7 +31,7 @@ class PropertiesReading(DefaultPath):
         return p
 
 
-class LanguageReading(DefaultPath):
+class LanguagesFile(DefaultPath):
     # todo переделать в ./languages.csv протестить работоспособность в виде exe-шника
     default_languages_path = "./lab3/languages.csv"
 
@@ -93,17 +93,70 @@ class LaborCategoriesDB(DefaultPath):
                 )
 
 
+class Method(object):
+    all = []
+    allNames = []
+
+    def __init__(self, name, T, Z) -> None:
+        self.name = name
+        self.T = T
+        self.Z = Z
+        Method.all.append(self)
+        Method.allNames.append(name)
+        super().__init__()
+
+    @staticmethod
+    def optimal():
+        opt = Method.all[0].T
+        for i in Method.all:
+            if i.T < opt:
+                opt = i
+        return opt
+
+    def __str__(self) -> str:
+        return self.name + " " + str(round(self.T, 4)) + " " + str(math.ceil(self.Z))
+
+
+class LifeCircleStage(object):
+
+    # alpha - трудозатраты, beta - длительность
+    def __init__(self, lf_id, name, alpha, beta) -> None:
+        self.lf_id = lf_id
+        self.name = name
+        self.alpha = alpha
+        self.beta = beta
+        super().__init__()
+
+
+class LifeCircleStagesFile(DefaultPath):
+
+    default_lc_path = "./lab3/life_circle_stage.csv"
+
+    def __init__(self, file_name) -> None:
+        self.lf_stages = []
+        super().__init__(file_name, self.default_lc_path)
+
+    def read_life_circles(self):
+        self.lf_stages = []
+        with open(self.file_name) as csv_file:
+            r = csv.reader(csv_file)
+            for row in r:
+                self.lf_stages.append(
+                    LifeCircleStage(int(row[0]), row[1], float(row[2]), float(row[3]))
+                )
+
+
 # Инициализация параметров
 
-langReading = LanguageReading(
+languages = LanguagesFile(
     input("Введите название файла с языками (enter, для выбора по умолчанию - "
-          + LanguageReading.default_languages_path + "):")
+          + LanguagesFile.default_languages_path + "):")
 )
-langReading.read_languages()
+languages.read_languages()
 
-propertiesReading = PropertiesReading(
+propertiesReading = PropertiesFile(
     input("Файл с параметрами для расчета (по умолчанию - "
-          + PropertiesReading.default_properties_path + "):")
+          + PropertiesFile.default_properties_path + "):")
 )
 properties = propertiesReading.read_properties()
 
@@ -113,8 +166,14 @@ laborCategoriesDB = LaborCategoriesDB(
 )
 laborCategoriesDB.read_categories()
 
+lifeCircleStagesFile = LifeCircleStagesFile(
+    input("Файл с распределением трудозатрат по жизненным циклам ПС (по умолчанию - "
+          + LifeCircleStagesFile.default_lc_path + "):")
+)
+lifeCircleStagesFile.read_life_circles()
+
 # Язык программирования
-language = langReading.language_by_id(properties[0][1])
+language = languages.language_by_id(properties[0][1])
 # Срок разработки Д (мес.)
 deadline = properties[1][1]
 # Размерность системы определенная экспертами
@@ -146,6 +205,7 @@ T_1 = system_size / P
 print("Трудозатраты на разработку системы:", T_1)
 Z_1 = T_1 / deadline
 print("Средняя численность специалистов: Z =", math.ceil(Z_1))
+method1 = Method("Прямой метод (экспертных оценок)", T_1, Z_1)
 
 # 1.2
 print("\n1.2 Метод определения ТЭП проекта на основе размерности БД программной системы.")
@@ -157,6 +217,7 @@ T_2 = 0.01 * R * laborCategory[2]
 print("Трудозатраты: ", T_2)
 Z_2 = T_2 / deadline
 print("Средняя численность специалистов:", math.ceil(Z_2))
+method2 = Method("На основе размерности БД", T_2, Z_2)
 
 # 1.3
 print("\n1.3 Определение технико-экономических показателей функциональных точек")
@@ -172,17 +233,19 @@ T_3 = COCOMO_A * ((R_LOC / 1000) ** COCOMO_E) / 12
 print("Трудозатраты (выбрана ИСС): ", T_3)
 Z_3 = T_3 / deadline
 print("Средняя численность специалистов:", math.ceil(Z_3), "\n")
+method3 = Method("Функциональных точек", T_3, Z_3)
 
 print("Выводы")
-methods = ["Прямой метод экспертных оценок", "На основе размерности бд", "Метод функциональных точек"]
 table = [["Метод", "Трудозатраты (чм)", "Деятельность (мес)", "Исполнителей (чел)"],
-         [methods[0], T_1, deadline, math.ceil(Z_1)], [methods[1], T_2, deadline, math.ceil(Z_2)],
-         [methods[2], T_3, deadline, math.ceil(Z_3)]]
+         [Method.allNames[0], T_1, deadline, math.ceil(Z_1)], [Method.allNames[1], T_2, deadline, math.ceil(Z_2)],
+         [Method.allNames[2], T_3, deadline, math.ceil(Z_3)]]
 print(tabulate(table, headers="firstrow"))
 
 # 1.4
-print("\n Пределение стоимости (договорной цены) на создание ПС")
-
+optMethod = Method.optimal()
+print("\n1.4 Пределение стоимости (договорной цены) на создание ПС")
+print("Выбираем исходные данные, полученные при помощи метода:",
+      optMethod, "как наименее затратные")
 
 input('\nPress ENTER to exit')
 exit(0)
