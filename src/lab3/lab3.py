@@ -131,37 +131,86 @@ class LifeCircleStage(object):
         self.tech_stuff = tech_stuff
         super().__init__()
 
+    def __str__(self) -> str:
+        return "Этап ЖЦ " + str(self.lf_id) + " " + self.name + " a = " + str(self.alpha) + " b = " + str(self.beta) + \
+               " " + str(self.analyst) + " " + str(self.programmers) + " " + str(self.tech_stuff)
+
 
 class LifeCircleStagesFile(DefaultPath):
-
     default_lc_path = "./lab3/life_circle_stage.csv"
 
     def __init__(self, file_name) -> None:
-        self.lf_stages = []
+        self.lc_stages = []
+        self.emp_by_lc = []
+        self.z_i = []
+        self.d_i = []
+        self.the_salary_fund = []
         super().__init__(file_name, self.default_lc_path)
 
     def read_life_circles(self):
-        self.lf_stages = []
+        self.lc_stages = []
         with open(self.file_name) as csv_file:
             r = csv.reader(csv_file)
             for row in r:
-                self.lf_stages.append(
+                self.lc_stages.append(
                     LifeCircleStage(int(row[0]), row[1], float(row[2]), float(row[3]),
                                     float(row[4]), float(row[5]), float(row[6]))
                 )
 
     # Расчитывает и печатает таблицу 1.7
-    def calc_avg_emp_amount(self, T, D):
+    def avg_emp_amount(self, T, D):
         headers = ["Этапы жизненного цикла", "Численность Zi(чел)", "Длительность, месяцов Дi"]
-        z_i = []
-        d_i = []
+        self.z_i = []
+        self.d_i = []
         rows = [headers]
-        for stage in self.lf_stages:
-            z_i.append(stage.alpha * T / stage.beta * D)
-            d_i.append(stage.beta * D)
-            rows.append([stage.name, z_i[-1], d_i[-1]])
+        for stage in self.lc_stages:
+            self.z_i.append(math.ceil(stage.alpha * T / stage.beta * D))
+            self.d_i.append(stage.beta * D)
+            rows.append([stage.name, self.z_i[-1], self.d_i[-1]])
         print(tabulate(rows, headers="firstrow"))
-        return z_i, d_i
+        return self.z_i, self.d_i
+
+    # Расчитывает и печатает таблицу 1.9
+    def emp_amount_by_life_circle(self):
+        self.emp_by_lc = []
+        headers = ["Этапы жизненного цикла", "Аналитики", "Программисты", "Технические специалисты"]
+        rows = [headers]
+        for i in range(len(self.lc_stages)):
+            self.emp_by_lc.append(
+                [math.ceil(self.lc_stages[i].analyst * self.z_i[i]),
+                 math.ceil(self.lc_stages[i].programmers * self.z_i[i]),
+                 math.ceil(self.lc_stages[i].tech_stuff * self.z_i[i])]
+            )
+            row = [self.lc_stages[i].name]
+            row.extend(self.emp_by_lc[i])
+            rows.append(row)
+        print(tabulate(rows, headers="firstrow"))
+
+    # Расчитывает и печатает таблицу 1.10
+    def salary_fund(self, programmer_rate_, analyst_ratio, tech_ratio):
+        self.the_salary_fund = []
+        headers = ["Этапы жизненного цикла", "Аналитики", "Программисты", "Техник", "ФЗП по этапу"]
+        rows = [headers]
+        # определяем месячные ставки:
+        analyst_rate = programmer_rate_ * analyst_ratio
+        tech_rate = programmer_rate * tech_ratio
+        # считаем зарплаты
+        all_salary_sum = 0.0
+        for i in range(len(self.lc_stages)):
+            row = [self.lc_stages[i].name]  # добавляем название этапа жц
+            self.the_salary_fund.append([
+                analyst_rate * self.d_i[i] * self.emp_by_lc[i][0],
+                programmer_rate * self.d_i[i] * self.emp_by_lc[i][1],
+                tech_rate * self.d_i[i] * self.emp_by_lc[i][2]
+            ])
+            row.extend(self.the_salary_fund[-1])  # добавляем расчитанные зп на этапе
+            stage_sum = sum(self.the_salary_fund[-1])
+            all_salary_sum += stage_sum
+            self.the_salary_fund.append(stage_sum)
+            row.append(stage_sum)  # сумма ФЗП
+            rows.append(row)
+        print(tabulate(rows, headers="firstrow", floatfmt=".2f"))
+        return all_salary_sum
 
 
 # Инициализация параметров
@@ -259,23 +308,30 @@ print("Средняя численность специалистов:", math.ce
 method3 = Method("Функциональных точек", T_3, Z_3)
 
 print("Выводы")
-table = [["Метод", "Трудозатраты (чм)", "Деятельность (мес)", "Исполнителей (чел)"],
-         [Method.allNames[0], T_1, deadline, math.ceil(Z_1)], [Method.allNames[1], T_2, deadline, math.ceil(Z_2)],
-         [Method.allNames[2], T_3, deadline, math.ceil(Z_3)]]
+table = [
+    ["Метод", "Трудозатраты (чм)", "Деятельность (мес)", "Исполнителей (чел)"],
+    [Method.allNames[0], T_1, deadline, math.ceil(Z_1)],
+    [Method.allNames[1], T_2, deadline, math.ceil(Z_2)],
+    [Method.allNames[2], T_3, deadline, math.ceil(Z_3)]
+]
 print(tabulate(table, headers="firstrow"))
 
-# 1.4
 optMethod = Method.optimal()
 print("\n1.4 Пределение стоимости (договорной цены) на создание ПС")
 print("Выбираем исходные данные, полученные при помощи метода:",
       optMethod, "как наименее затратные")
 
-print("\nТаблица 1.7 - Расчет средней численности сотрудников")
-Zi, Di = lifeCircleStagesFile.calc_avg_emp_amount(optMethod.T, deadline)
+print("\nТаблица 1.7 Расчет средней численности сотрудников")
+Zi, Di = lifeCircleStagesFile.avg_emp_amount(optMethod.T, deadline)
 
 print("\nТаблица 1.9 Расчет численности специалистов по этапам жизненного цикла")
+lifeCircleStagesFile.emp_amount_by_life_circle()
 
-
+print("\nТаблица 1.10 Распределение фонда заработной платы по этапам жизненного цикла ПС")
+print("\nФонд оплаты труда на разработку и коплексные испытания системы составляет:",
+      round(
+          lifeCircleStagesFile.salary_fund(programmer_rate, programmerToAnalystSalary, programmerToTechStuff), 2
+      ), "рублей")
 
 input('\nPress ENTER to exit')
 exit(0)
