@@ -120,11 +120,15 @@ class Method(object):
 class LifeCircleStage(object):
 
     # alpha - трудозатраты, beta - длительность
-    def __init__(self, lf_id, name, alpha, beta) -> None:
+    def __init__(self, lf_id, name, alpha, beta, analyst, programmers, tech_stuff) -> None:
         self.lf_id = lf_id
         self.name = name
         self.alpha = alpha
         self.beta = beta
+        # процентное распределение специалистов по этапам жизненного цикла
+        self.analyst = analyst
+        self.programmers = programmers
+        self.tech_stuff = tech_stuff
         super().__init__()
 
 
@@ -142,7 +146,8 @@ class LifeCircleStagesFile(DefaultPath):
             r = csv.reader(csv_file)
             for row in r:
                 self.lf_stages.append(
-                    LifeCircleStage(int(row[0]), row[1], float(row[2]), float(row[3]))
+                    LifeCircleStage(int(row[0]), row[1], float(row[2]), float(row[3]),
+                                    float(row[4]), float(row[5]), float(row[6]))
                 )
 
     # Расчитывает и печатает таблицу 1.7
@@ -203,6 +208,11 @@ func_points = properties[6][1]
 V = properties[7][1]
 # Ставка программиста (руб.)
 programmer_rate = properties[8][1]
+# Отношения ставки программиста к:
+# системному аналитику
+programmerToAnalystSalary = float(properties[9][1])
+# техническому специалисту
+programmerToTechStuff = float(properties[10][1])
 
 print("Выбранный тип программной системы: ИСС")
 
@@ -262,6 +272,9 @@ print("Выбираем исходные данные, полученные пр
 
 print("\nТаблица 1.7 - Расчет средней численности сотрудников")
 Zi, Di = lifeCircleStagesFile.calc_avg_emp_amount(optMethod.T, deadline)
+
+print("\nТаблица 1.9 Расчет численности специалистов по этапам жизненного цикла")
+
 
 
 input('\nPress ENTER to exit')
