@@ -1,7 +1,17 @@
 import csv
 import math
 from tabulate import tabulate
+import sys, os
 
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle, the pyInstaller bootloader
+    # extends the sys module by a flag frozen=True and sets the app
+    # path into variable _MEIPASS'.
+    application_path = sys._MEIPASS
+else:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+application_path = os.path.dirname(sys.argv[0])
 
 # Обьявление классов и функций
 
@@ -17,7 +27,7 @@ class DefaultPath(object):
 
 
 class PropertiesFile(DefaultPath):
-    default_properties_path = "./lab3/params.properties"
+    default_properties_path = application_path + os.path.sep + "params.properties"
 
     def __init__(self, file_name) -> None:
         super().__init__(file_name, self.default_properties_path)
@@ -33,7 +43,7 @@ class PropertiesFile(DefaultPath):
 
 class LanguagesFile(DefaultPath):
     # todo переделать в ./languages.csv протестить работоспособность в виде exe-шника
-    default_languages_path = "./lab3/languages.csv"
+    default_languages_path = application_path + os.path.sep + "languages.csv"
 
     def __init__(self, file_name) -> None:
         self.languages = []
@@ -70,7 +80,7 @@ class Language(object):
 
 
 class LaborCategoriesDB(DefaultPath):
-    default_labor_categories_path = "./lab3/labor_categories_db.csv"
+    default_labor_categories_path = application_path + os.path.sep + "labor_categories_db.csv"
 
     def __init__(self, file_name) -> None:
         self.categories = []
@@ -137,7 +147,7 @@ class LifeCircleStage(object):
 
 
 class LifeCircleStagesFile(DefaultPath):
-    default_lc_path = "./lab3/life_circle_stage.csv"
+    default_lc_path = application_path + os.path.sep + "life_circle_stage.csv"
 
     def __init__(self, file_name) -> None:
         self.lc_stages = []
