@@ -159,7 +159,7 @@ class LifeCircleStagesFile(DefaultPath):
 
     def read_life_circles(self):
         self.lc_stages = []
-        with open(self.file_name) as csv_file:
+        with open(self.file_name, encoding="UTF8") as csv_file:
             r = csv.reader(csv_file)
             for row in r:
                 self.lc_stages.append(
