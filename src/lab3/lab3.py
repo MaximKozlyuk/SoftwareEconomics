@@ -223,6 +223,34 @@ class LifeCircleStagesFile(DefaultPath):
         return all_salary_sum
 
 
+# Вывод общей сметы
+def estimate(total_found_):
+    total_project_cost = 0.0
+    estimate_headers = ["Наименование статей расходов", "Сумма (руб)"]
+    rows = [estimate_headers]
+    rows.append(["Фон оплаты труда (ФОТ)", total_found_])
+    total_project_cost += total_found_
+    rows.append(["Страховые взносы в ПФР, ФСС, ФОМС, (30%) от ФОТ", total_found_ * 0.3])
+    total_project_cost += total_found_ * 0.3
+    rows.append(["Увеличение стоимости основных средств (Notebook)", 20000.0])
+    total_project_cost += 20000.0
+    rows.append(["Комунальные услуги и услуги связи (телефон, Интернет)", 1000 * deadline])
+    total_project_cost += 1000 * deadline
+    rows.append(["Прочие расходы", 500.0 * deadline])
+    total_project_cost += 500.0 * deadline
+    direct_spent = total_project_cost
+    rows.append(["Итого прямые затраты:", total_project_cost])
+    rows.append(["Фонд развития производства (10% от прямых затрат)", direct_spent * 0.1])
+    total_project_cost += direct_spent * 0.1
+    rows.append(["Накладные расходы (12 % от прямых затрат)", direct_spent * 0.12])
+    total_project_cost += direct_spent * 0.12
+    rows.append(["Всего расходов", total_project_cost])
+    rows.append(["НДС (18 % от общей стоимости)", total_project_cost * 0.18])
+    total_project_cost += total_project_cost * 0.18
+    rows.append(["ИТОГО ДОГОВОРНАЯ ЦЕНА", total_project_cost])
+    print(tabulate(rows, headers="firstrow", floatfmt=".2f"))
+
+
 # Инициализация параметров
 
 languages = LanguagesFile(
@@ -272,6 +300,8 @@ programmer_rate = properties[8][1]
 programmerToAnalystSalary = float(properties[9][1])
 # техническому специалисту
 programmerToTechStuff = float(properties[10][1])
+# норматив трудоемкости, при проведении опытной эксплуатации
+testing_labor_standard = float(properties[11][1])
 
 print("Выбранный тип программной системы: ИСС")
 
@@ -338,10 +368,22 @@ print("\nТаблица 1.9 Расчет численности специали
 lifeCircleStagesFile.emp_amount_by_life_circle()
 
 print("\nТаблица 1.10 Распределение фонда заработной платы по этапам жизненного цикла ПС")
-print("\nФонд оплаты труда на разработку и коплексные испытания системы составляет:",
-      round(
-          lifeCircleStagesFile.salary_fund(programmer_rate, programmerToAnalystSalary, programmerToTechStuff), 2
-      ), "рублей")
+dev_found = round(lifeCircleStagesFile.salary_fund(programmer_rate, programmerToAnalystSalary, programmerToTechStuff), 2)
+print("\nФонд оплаты труда на разработку и коплексные испытания системы составляет:", dev_found, "рублей")
+
+# 1.4.2
+test_time = deadline / 2
+print("Срок опытной эксплуатации:", test_time)
+testers_amount = testing_labor_standard * test_time
+# todo сильно меньше единицы
+print("Численность сотрудников, привлекаемых к опытной эксплуатации:", testers_amount)
+testers_salary_found = round((math.ceil(testers_amount) * test_time * programmer_rate * 0.85), 2)
+print("Фонд зарплаты сотрудников, привлекаемых к опытной эксплуатации:", testers_salary_found)
+total_found = dev_found + testers_salary_found
+print("Общий фонд зарплаты на разработку и внедрение системы составляет:", total_found)
+
+print("\nТаблица 1.11 Смета затрат на разработку и вндрение системы")
+estimate(total_found)
 
 input('\nPress ENTER to exit')
 exit(0)
