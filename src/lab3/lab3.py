@@ -1,7 +1,9 @@
 import csv
 import math
+import os
+import sys
+
 from tabulate import tabulate
-import sys, os
 
 if getattr(sys, 'frozen', False):
     # If the application is run as a bundle, the pyInstaller bootloader
@@ -42,7 +44,6 @@ class PropertiesFile(DefaultPath):
 
 
 class LanguagesFile(DefaultPath):
-    # todo переделать в ./languages.csv протестить работоспособность в виде exe-шника
     default_languages_path = application_path + os.path.sep + "languages.csv"
 
     def __init__(self, file_name) -> None:
@@ -227,8 +228,7 @@ class LifeCircleStagesFile(DefaultPath):
 def estimate(total_found_):
     total_project_cost = 0.0
     estimate_headers = ["Наименование статей расходов", "Сумма (руб)"]
-    rows = [estimate_headers]
-    rows.append(["Фон оплаты труда (ФОТ)", total_found_])
+    rows = [estimate_headers, ["Фон оплаты труда (ФОТ)", total_found_]]
     total_project_cost += total_found_
     rows.append(["Страховые взносы в ПФР, ФСС, ФОМС, (30%) от ФОТ", total_found_ * 0.3])
     total_project_cost += total_found_ * 0.3
@@ -368,7 +368,14 @@ print("\nТаблица 1.9 Расчет численности специали
 lifeCircleStagesFile.emp_amount_by_life_circle()
 
 print("\nТаблица 1.10 Распределение фонда заработной платы по этапам жизненного цикла ПС")
-dev_found = round(lifeCircleStagesFile.salary_fund(programmer_rate, programmerToAnalystSalary, programmerToTechStuff), 2)
+dev_found = round(
+    lifeCircleStagesFile.salary_fund(
+        programmer_rate,
+        programmerToAnalystSalary,
+        programmerToTechStuff
+    ),
+    2
+)
 print("\nФонд оплаты труда на разработку и коплексные испытания системы составляет:", dev_found, "рублей")
 
 # 1.4.2
