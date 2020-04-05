@@ -228,7 +228,7 @@ class LifeCircleStagesFile(DefaultPath):
 def estimate(total_found_):
     total_project_cost = 0.0
     estimate_headers = ["Наименование статей расходов", "Сумма (руб)"]
-    rows = [estimate_headers, ["Фон оплаты труда (ФОТ)", total_found_]]
+    rows = [estimate_headers, ["Фонд оплаты труда (ФОТ)", total_found_]]
     total_project_cost += total_found_
     rows.append(["Страховые взносы в ПФР, ФСС, ФОМС, (30%) от ФОТ", total_found_ * 0.3])
     total_project_cost += total_found_ * 0.3
