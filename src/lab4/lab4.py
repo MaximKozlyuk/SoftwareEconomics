@@ -1,4 +1,5 @@
 import math
+import matplotlib.pyplot as plt
 
 from src.util.properties import PropertiesFile
 from tabulate import tabulate
@@ -44,11 +45,17 @@ def calc_var_spends(arr):
 props = PropertiesFile("params.properties")
 props = props.properties("=")
 
+# Стоимость программной системы из лб 3
 PS_cost = props[0][1]
+# Срок месяцев
 deadline = props[1][1]
+# Процент банковского кредита
 bank_credit_percent = props[2][1]
+# Заданный обьем рынка продаж
 market_v = props[3][1]
+# Дополнительная прибыль (НЕ тыс. рублей а просто рублей)
 additional_profit = props[4][1]
+# ЗП специалистов отдела маркетинга (%)
 market_stuff_salary_percent = props[5][1]
 
 one_copy_cost = PS_cost * 0.05  # стоимость тиражируемого продукта
@@ -82,6 +89,50 @@ print("x0 = a / (s - b) =", math.ceil(v_zero_point))
 print("\nВыводы")
 print("В течении месяца фирме необходимо подготовить и продать минимум", math.ceil(v_zero_point), "копий программного"
       , "продукта по цене", round_money(one_copy_cost), "чтобы окупить постоянные и переменные расходы.")
+
+# расчет значений для графика, на 20% больше чем точка безубыточности
+ceil_zero_point = math.ceil(v_zero_point)
+sales_range = ceil_zero_point + (math.ceil(ceil_zero_point * 0.2)) + 1
+# точки x для всех графиков одинаковы (кол-во рподанных товаров)
+x_points = list(range(0, sales_range))
+var_spends_counter = 0.0
+var_spends_y_points = []
+
+sales_income_counter = 0.0
+sales_income_y_points = []
+
+total_costs_counter = fixed_spends
+total_costs_y_points = []
+for i in range(0, sales_range):
+    var_spends_y_points.append(var_spends_counter)
+
+    sales_income_y_points.append(sales_income_counter)
+    sales_income_counter += one_copy_cost
+
+    total_costs_y_points.append(total_costs_counter)
+    total_costs_counter += var_spends
+    var_spends_counter += var_spends
+
+plt.plot([0, sales_range - 1], [fixed_spends, fixed_spends], label="Постоянные издержки", color="green")
+plt.plot(x_points, var_spends_y_points, label="Перменные издержки", color="brown", linestyle="dashed")
+plt.plot(x_points, sales_income_y_points, label="Доходы от продаж", color="blue", linestyle="dashed")
+plt.plot(x_points, total_costs_y_points, label="Общие издержки", color="brown")
+
+zero_point_income = one_copy_cost * v_zero_point
+plt.plot(
+    [v_zero_point, v_zero_point], [0, zero_point_income],
+    label="Точка безубыточности", color="red", linestyle="dashed"
+)
+plt.plot([v_zero_point], [zero_point_income], color="red", marker="o")
+
+plt.xlabel("Количество продаж")
+plt.ylabel("₽")
+
+plt.grid()
+plt.legend()
+plt.show()
+
+print("Расчет договорной цены тиражируемой системы при заданном обьеме рынка продаж")
 
 
 input('\nPress ENTER to exit')

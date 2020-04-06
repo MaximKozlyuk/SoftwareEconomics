@@ -175,7 +175,7 @@ class LifeCircleStagesFile(DefaultPath):
         self.d_i = []
         rows = [headers]
         for stage in self.lc_stages:
-            self.z_i.append(math.ceil(stage.alpha * T / stage.beta * D))
+            self.z_i.append(stage.alpha * T / stage.beta * D)
             self.d_i.append(stage.beta * D)
             rows.append([stage.name, self.z_i[-1], self.d_i[-1]])
         print(tabulate(rows, headers="firstrow"))
@@ -232,6 +232,7 @@ def estimate(total_found_):
     total_project_cost += total_found_
     rows.append(["Страховые взносы в ПФР, ФСС, ФОМС, (30%) от ФОТ", total_found_ * 0.3])
     total_project_cost += total_found_ * 0.3
+    # todo можно сделать выбор нескольких ноутбуков
     rows.append(["Увеличение стоимости основных средств (Notebook)", 20000.0])
     total_project_cost += 20000.0
     rows.append(["Комунальные услуги и услуги связи (телефон, Интернет)", 1000 * deadline])
@@ -347,7 +348,8 @@ Z_3 = T_3 / deadline
 print("Средняя численность специалистов:", math.ceil(Z_3), "\n")
 method3 = Method("Функциональных точек", T_3, Z_3)
 
-print("Выводы")
+print("Таблица 1.6 – Распределение тредозатрат и длительности по основным этапам жизненного цикла создания "
+      "программных систем")
 table = [
     ["Метод", "Трудозатраты (чм)", "Деятельность (мес)", "Исполнителей (чел)"],
     [Method.allNames[0], T_1, deadline, math.ceil(Z_1)],
