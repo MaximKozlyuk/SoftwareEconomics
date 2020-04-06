@@ -1,8 +1,54 @@
 import math
 import matplotlib.pyplot as plt
+import os
+import sys
 
-from src.util.properties import PropertiesFile
 from tabulate import tabulate
+
+
+class DefaultPath(object):
+
+    def __init__(self, file_name) -> None:
+        if getattr(sys, 'frozen', False):
+            # If the application is run as a bundle, the pyInstaller bootloader
+            # extends the sys module by a flag frozen=True and sets the app
+            # path into variable _MEIPASS'.
+            self.app_path = sys._MEIPASS
+        else:
+            self.app_path = os.path.dirname(os.path.abspath(__file__))
+        self.app_path = os.path.dirname(sys.argv[0])
+        self.default_properties_path = self.app_path + os.path.sep + "params.properties"
+
+        if len(file_name) != 0 and file_name != "":
+            self.file_name = self.app_path + os.path.sep + file_name
+        super().__init__()
+
+
+class PropertiesFile(DefaultPath):
+
+    def __init__(self, file_name) -> None:
+        super().__init__(file_name)
+
+    def properties(self, delimiter):
+        p = []
+        with open(self.file_name, 'r') as file:
+            for row in file:
+                parts = row.split(str(delimiter))
+                try:
+                    p.append((parts[0], float(parts[1])))
+                except ValueError as e:               # to remove new line symbol in case if reading string value
+                    p.append((parts[0], str(parts[1])[:len(str(parts[1]))-1]))
+        return p
+
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle, the pyInstaller bootloader
+    # extends the sys module by a flag frozen=True and sets the app
+    # path into variable _MEIPASS'.
+    application_path = sys._MEIPASS
+else:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+application_path = os.path.dirname(sys.argv[0])
 
 
 def round_money(x):
