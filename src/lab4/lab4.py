@@ -40,6 +40,7 @@ class PropertiesFile(DefaultPath):
                     p.append((parts[0], str(parts[1])[:len(str(parts[1]))-1]))
         return p
 
+
 if getattr(sys, 'frozen', False):
     # If the application is run as a bundle, the pyInstaller bootloader
     # extends the sys module by a flag frozen=True and sets the app
@@ -112,7 +113,7 @@ marketing_employ_salary = one_copy_cost * market_stuff_salary_percent
 print("Таблица 2.1 Постоянные(фиксированные) расходы в месяц")
 managers_overhead_spends = 50000.0 + 30000.0 + 20000.0      # накладные расходы на содержание АУП
 month_credit_deposit = PS_cost / deadline
-month_avg_credit_proc = (PS_cost * bank_credit_percent) / deadline
+month_avg_credit_proc = (PS_cost * bank_credit_percent) / 12
 other_spends = managers_overhead_spends * 0.1
 fixed_spends = calc_fixed_spends([managers_overhead_spends, month_credit_deposit, month_avg_credit_proc, other_spends])
 
@@ -136,6 +137,7 @@ print("\nВыводы")
 print("В течении месяца фирме необходимо подготовить и продать минимум", math.ceil(v_zero_point), "копий программного"
       , "продукта по цене", round_money(one_copy_cost), "чтобы окупить постоянные и переменные расходы.")
 
+# a - fixed_spends, b - var_spends, xp - market_v
 # расчет значений для графика, на 20% больше чем точка безубыточности
 ceil_zero_point = math.ceil(v_zero_point)
 sales_range = ceil_zero_point + (math.ceil(ceil_zero_point * 0.2)) + 1
@@ -178,8 +180,34 @@ plt.grid()
 plt.legend()
 plt.show()
 
-print("Расчет договорной цены тиражируемой системы при заданном обьеме рынка продаж")
+print("2.2 Расчет договорной цены тиражируемой системы при заданном обьеме рынка продаж:")
+Sm = (fixed_spends + var_spends * market_v) / market_v
+wholesale_discount = 100 - (Sm * 100 / one_copy_cost)
+print("Sm =", round_money(Sm))
+print("Скидка оптовому покупателю:", round_money(wholesale_discount), "%")
 
+print("2.3 Определение дополнительного обьема продаж при заданном уровне прибыли")
+Xd = (additional_profit + fixed_spends) / (one_copy_cost - var_spends)
+print("Xd =", math.ceil(Xd))
+print(
+    "Выводы. Обьем продаж для получения дополнительной прибыли в размере", additional_profit,
+    "рублей составляет", Xd,
+    "копий продукта в месяц, при условии что постоянные и переменные издержки фирмы неизменны"
+)
+
+print("2.4 Определение срока окупаемости проекта и количества продаж для полного возмещения затрат")
+# todo по тексту методички не ясно, мб тут вместо one_copy_cost Sm (договорная стоимость продажи системы)
+Xn = (deadline * fixed_spends) / (one_copy_cost - var_spends)
+Cok = Xn / v_zero_point
+print("Xn =", Xn)
+print("Cok =", Cok)
+
+print(
+    "Выводы. срок окупаемости проекта при продаже не менее", ceil_zero_point, "копий продукта в месяц"
+    "(точка безубыточности) и рыночной стоимости", round_money(Sm), "руб. за копию составит", round(Cok, 2), "месяцев."
+    "Для того, чтобы окупить все расходы на реализацию проекта, необходимо продать",
+    math.ceil(Xn), "копий программного продукта"
+)
 
 input('\nPress ENTER to exit')
 exit(0)
