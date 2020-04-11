@@ -118,9 +118,9 @@ class Method(object):
 
     @staticmethod
     def optimal():
-        opt = Method.all[0].T
+        opt = Method.all[0]
         for i in Method.all:
-            if i.T < opt:
+            if i.T < opt.T:
                 opt = i
         return opt
 
