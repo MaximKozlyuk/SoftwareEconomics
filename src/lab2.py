@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 from sympy import *
 
 
-def round_money(x):
-    return round(x, 2)
+def round_money(x_):
+    return round(x_, 2)
 
 
 def line_intersection(line1, line2):
