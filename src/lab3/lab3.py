@@ -338,6 +338,8 @@ W = 0.65 + (0.01 * V)
 print("Влияние факторов внешней среды на общее кол-во функциональных точек W =", W)
 Rf = func_points * W
 print("Уточненное кол-во функ. точек с учетом факторов внешней среды R(F) =", Rf)
+if language is None:
+    raise Exception("Номер языка из файла с параметрами не найден.")
 R_LOC = Rf * language.loc
 print("Размерность ПО для", language.name, ":", R_LOC)
 COCOMO_A = 3
