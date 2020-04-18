@@ -1,14 +1,3 @@
-"""
-    Фирма рассматривает целесообразность внедрения системы управления ИТ- инфраструктурой.
-    По прогнозам ежегодная экономия от снижения ТСО (совокупной стоимости владения ИТ) составит 75 тыс. руб.
-    Проект рассчитан на 3 года. Стартовые инвестиции в проект - 100 тыс. руб.
-    Затраты на реализацию проекта составят: в 1-й год - 20 тыс. руб, во 2-й год – 15 тыс. руб., в 3-й год – 10 тыс. руб.
-    Необходимо рассчитать показатели экономической эффективности проекта
-    с учетом ставки дисконтирования (нормы прибыли), равной 11%.
-"""
-
-# todo input from file
-
 import matplotlib.pyplot as plt
 from sympy import *
 
@@ -34,6 +23,7 @@ def line_intersection(line1, line2):
     return x, y
 
 
+# todo input from file
 print("Lab2 Целесообразность внедрения системы управления ИТ- инфраструктурой\n")
 
 print("Введите данные для расчета:")
@@ -94,17 +84,16 @@ for k in range(1, n + 1):
 print("R:", R)
 print("NPVV:", NPVV)
 
-plt.xlabel('n, кол-во лет')
-plt.ylabel('NPV')
-plt.title("Чистый приведенный доход")
-
 fig = plt.figure()
 ax = fig.add_subplot(111)
 xValues = list(range(0, n + 1))
 plt.plot(xValues, NPVV, marker='o', label="NPV")
-# plt.xticks()
 plt.plot(list(range(0, n + 1)), [0] * (n + 1), color="green")
 plt.grid()
+
+plt.xlabel('n, кол-во лет')
+plt.ylabel('NPV')
+plt.title("Чистый приведенный доход")
 
 # 4
 balance = 0
